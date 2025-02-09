@@ -1,0 +1,90 @@
+.add_column {
+    display: flex;
+    gap: 10px;
+    color: white;
+    background-color: #194f57;
+    width: 320px;
+    min-width: 320px;
+    border-radius: 15px;
+    padding: 15px 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+}
+
+.add_column:hover {
+    opacity: 0.7;
+}
+
+.add_column_active {
+    background-color: black;
+    width: 320px;
+    min-width: 320px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 15px;
+    padding: 15px 10px;
+    max-height: 100%;
+    min-height: 117px;
+    z-index: 10;
+    transition: all 1s ease;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-add_column {
+    outline: none;
+    border: none;
+    background-color: #0067F0;
+    color: white;
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
+.icon {
+    font-size: 28px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.icon:hover {
+    background-color: #194f57;
+}
+
+.input {
+    padding: 5px;
+    outline: none;
+    font-size: 16px;
+    background-color: #0D2A2E;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.add_column_active_bottom {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9;
+}

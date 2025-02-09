@@ -1,0 +1,117 @@
+.container {
+    width: 320px;
+    min-width: 320px;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    padding: 10px;
+    /* height: auto; */
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* z-index: 10; */
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 9;
+    /* background-color: red; */
+}
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 15px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 5px;
+    max-height: 48.5px;
+    z-index: 10;
+}
+
+.top:hover {
+    background-color: rgba(13, 42, 46, 0.5);
+    /* opacity: 0.8; */
+}
+
+.input {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    /* z-index: 10; */
+}
+
+.active {
+    background-color: rgba(13, 42, 46, 0.5);
+    border: 1px solid white;
+}
+
+.emojiPicker {
+    margin-bottom: 10px;
+}
+
+.tasks-container {
+    max-height: 100%; 
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding-right: 5px;
+    /* z-index: 10; */
+}
+
+.new-task {
+  background-color: #194f57;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  /* z-index: 10; */
+}
+
+
+.bottom {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 5px;
+}
+
+
+.bottomActif:hover {
+    background-color: rgba(13, 42, 46, 0.5);
+}
+
+.btn-add_task {
+    margin-right: 15px;
+}
+
+.close-input-new_task {
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.close-input-new_task:hover{
+    background-color: rgba(13, 42, 46, 0.5);
+}
+
+.btn-add_task {
+    background-color: blue;
+    font-weight: 400;
+    color: white;
+    padding: 0 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
