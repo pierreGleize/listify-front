@@ -15,26 +15,15 @@ import { UseAppDispatch, useAppSelector } from "@/app/redux/store";
 import { CloseOutlined } from "@ant-design/icons";
 // import TaskModal from "./TaskModal";
 import { RootState } from "@/app/redux/store";
-// import { DndContext, closestCorners } from "@dnd-kit/core";
-// import {
-//   SortableContext,
-//   arrayMove,
-//   verticalListSortingStrategy,
-// } from "@dnd-kit/sortable";
-// import Droppable from "../dndKit/Droppable";
-// import Draggable from "../dndKit/Draggable";
+import { Droppable } from "react-beautiful-dnd";
 
 interface ColumnProps {
   name: string;
-  // tasks: [];
+  tasks: { _id: string; name: string }[];
   id: string;
 }
 
-const Column: React.FC<ColumnProps> = ({
-  name,
-  id,
-  //  tasks
-}) => {
+const Column: React.FC<ColumnProps> = ({ name, id, tasks }) => {
   const [inputColumnActive, setInputColumnActive] = useState(false);
   const [columntName, setColumnName] = useState("");
   const [isopenEmoji, setIsOpenEmoji] = useState(false);
@@ -45,39 +34,15 @@ const Column: React.FC<ColumnProps> = ({
   // const [loading, setLoading] = useState(false);
   const inputColumnNameRef = useRef<HTMLInputElement | null>(null);
 
-  const boards = useAppSelector((state: RootState) => state.board.value);
+  // const boards = useAppSelector((state: RootState) => state.board.value);
   const currentBoardId = useAppSelector(
     (state: RootState) => state.board.currentBoardId
   );
 
-  const currentBoard = boards.find((board) => board._id === currentBoardId);
+  // const currentBoard = boards.find((board) => board._id === currentBoardId);
 
-  const currentColumn =
-    currentBoard && currentBoard.columnId.find((column) => column._id === id);
-
-  // const [tasks, setTasks] = useState(currentColumn?.tasks || []);
-
-  // const handleDragEnd = (event) => {
-  //   const { active, over } = event;
-  //   if (!over) return;
-
-  //   const sourceColumnId = active.data.current.columnId;
-  //   const destinationColumnId = over.id;
-
-  //   if (sourceColumnId === destinationColumnId) {
-  //     // Réorganisation des tâches dans la même colonne
-  //     const oldIndex = tasks.findIndex((task) => task._id === active.id);
-  //     const newIndex = tasks.findIndex((task) => task._id === over.id);
-
-  //     if (oldIndex !== newIndex) {
-  //       const newTasks = arrayMove(tasks, oldIndex, newIndex);
-  //       setTasks(newTasks);
-  //     }
-  //   } else {
-  //     // Déplacement d'une tâche vers une autre colonne
-  //     // dispatch(moveTask({ taskId: active.id, fromColumn: sourceColumnId, toColumn: destinationColumnId }));
-  //   }
-  // };
+  // const currentColumn =
+  //   currentBoard && currentBoard.columnId.find((column) => column._id === id);
 
   const dispatch = UseAppDispatch();
 
@@ -188,11 +153,6 @@ const Column: React.FC<ColumnProps> = ({
         ></div>
       )}
       <div className={styles.container}>
-        {/* <DndContext
-          onDragEnd={handleDragEnd}
-          collisionDetection={closestCorners}
-        >
-          <Droppable id={id}> */}
         {!inputColumnActive && (
           <div
             className={styles.top}
@@ -239,19 +199,34 @@ const Column: React.FC<ColumnProps> = ({
           className={styles.emojiPicker}
         />
         <div className={styles["tasks-container"]}>
-          {/* <SortableContext
-                items={tasks.map((task) => task._id)}
-                strategy={verticalListSortingStrategy}
-              > */}
-          {currentColumn &&
-            currentColumn.tasks.map((task) => {
-              return <Task key={task._id} name={task.name} id={task._id} />;
-              // <Draggable key={task._id} id={task._id} columnId={id}>
-
-              {
-                /* </Draggable> */
-              }
-            })}
+          <Droppable
+            droppableId={id}
+            isDropDisabled={false}
+            isCombineEnabled={false}
+            ignoreContainerClipping={false}
+            // direction="vertical"
+          >
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                // className={styles["tasks-container"]}
+              >
+                {tasks.map((task: { _id: string; name: string }, index) => {
+                  // console.log(provided);
+                  return (
+                    <Task
+                      key={task._id}
+                      name={task.name}
+                      id={task._id}
+                      index={index}
+                    />
+                  );
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
 
           {inputNewTaskActive && (
             <div
@@ -267,7 +242,6 @@ const Column: React.FC<ColumnProps> = ({
               />
             </div>
           )}
-          {/* </SortableContext> */}
         </div>
         {!inputNewTaskActive ? (
           <div
@@ -295,8 +269,6 @@ const Column: React.FC<ColumnProps> = ({
             // loading={loading}
           />
         )} */}
-        {/* </Droppable>
-        </DndContext>{" "} */}
       </div>
     </>
   );

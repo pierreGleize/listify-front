@@ -4,8 +4,6 @@
     background-color: black;
     height: 100vh;
     max-height: 100vh;
-    /* border-right: 4px solid #194f57;
-    border-top: 4px solid #194f57; */
     color: white;
     transition: left 0.3s ease-in-out;
     padding: 1rem;

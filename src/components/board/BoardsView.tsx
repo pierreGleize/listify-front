@@ -5,10 +5,11 @@ import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import Image from "next/image";
 import Column from "../mapped/Column";
-import { addColumn } from "@/app/redux/slices/boardSlice";
+import { addColumn, moveTask } from "@/app/redux/slices/boardSlice";
 import { UseAppDispatch } from "@/app/redux/store";
 import { useAppSelector } from "@/app/redux/store";
 import styles from "../../styles/board/BoardsView.module.css";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 const BoardsView = () => {
   const [isAddColumnActive, setIsAddColumnActive] = useState(false);
@@ -17,12 +18,12 @@ const BoardsView = () => {
   const [newColumnName, setNewColumnName] = useState("");
 
   const boards = useAppSelector((state) => state.board);
+  const currentBoardId = useAppSelector((state) => state.board.currentBoardId);
+  const activeBoard = boards.value.find(
+    (element) => element._id === currentBoardId
+  );
 
   const dispatch = UseAppDispatch();
-
-  const activeBoard = boards.value.find(
-    (element) => element._id === boards.currentBoardId
-  );
 
   const handleAddColumn = async () => {
     if (newColumnName.trim().length === 0) return;
@@ -61,17 +62,43 @@ const BoardsView = () => {
       console.error(error);
     }
   };
+
+  const onDragEnd = (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) return;
+
+    dispatch(
+      moveTask({
+        sourceColumnId: source.droppableId,
+        destinationColumnId: destination.droppableId,
+        sourceIndex: source.index,
+        destinationIndex: destination.index,
+        taskId: draggableId,
+      })
+    );
+  };
+
   return (
     <>
-      {activeBoard &&
-        activeBoard.columnId.map((column) => (
-          <Column
-            key={column._id}
-            name={column.name}
-            // tasks={board.tasks}
-            id={column._id}
-          />
-        ))}
+      <DragDropContext onDragEnd={onDragEnd}>
+        {activeBoard &&
+          activeBoard.columnId.map(
+            (column: {
+              name: string;
+              _id: string;
+              tasks: { name: string; _id: string }[];
+            }) => (
+              <Column
+                key={column._id}
+                name={column.name}
+                tasks={column.tasks}
+                id={column._id}
+              />
+            )
+          )}
+      </DragDropContext>
+
       {!isAddColumnActive ? (
         <button
           className={styles["add_column"]}

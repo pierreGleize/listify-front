@@ -6,7 +6,7 @@ interface User {
   email: string;
 }
 
-interface Task {
+export interface Task {
   name: string;
   members: User[];
   description: string;
@@ -103,18 +103,53 @@ const boardSlice = createSlice({
       const board = state.value.find(
         (element) => element._id === action.payload.boardId
       );
-      console.log("je suis dans le reducer");
-      if (board) {
-        console.log(board);
-        const column = board.columnId.find(
-          (element) => element._id === action.payload.columnId
-        );
-        if (column) {
-          console.log(column);
-          console.log(action.payload.task);
-          column.tasks.push(action.payload.task);
-        }
-      }
+      if (!board) return;
+      const column = board.columnId.find(
+        (element) => element._id === action.payload.columnId
+      );
+      if (!column) return;
+      column.tasks.push(action.payload.task);
+    },
+    moveTask: (
+      state,
+      action: PayloadAction<{
+        sourceColumnId: string;
+        destinationColumnId: string;
+        sourceIndex: number;
+        destinationIndex: number;
+        taskId: string;
+      }>
+    ) => {
+      const {
+        sourceColumnId,
+        destinationColumnId,
+        sourceIndex,
+        destinationIndex,
+        taskId,
+      } = action.payload;
+
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+
+      const sourceColumn = board.columnId.find(
+        (column) => column._id === sourceColumnId
+      );
+      const destinationColumn = board.columnId.find(
+        (column) => column._id === destinationColumnId
+      );
+
+      if (!sourceColumn || !destinationColumn) return;
+
+      const task = sourceColumn.tasks.find((task) => task._id === taskId);
+      if (!task) return;
+
+      // Supprimer la tâche de la colonne source
+      sourceColumn.tasks.splice(sourceIndex, 1);
+
+      // Ajouter la tâche à la colonne de destination
+      destinationColumn.tasks.splice(destinationIndex, 0, task);
     },
   },
 });
@@ -128,5 +163,6 @@ export const {
   renameBoard,
   renameColumn,
   addTask,
+  moveTask,
 } = boardSlice.actions;
 export default boardSlice.reducer;
