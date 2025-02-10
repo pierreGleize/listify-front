@@ -9,7 +9,7 @@ import { addColumn, moveTask } from "@/app/redux/slices/boardSlice";
 import { UseAppDispatch } from "@/app/redux/store";
 import { useAppSelector } from "@/app/redux/store";
 import styles from "../../styles/board/BoardsView.module.css";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 
 const BoardsView = () => {
   const [isAddColumnActive, setIsAddColumnActive] = useState(false);

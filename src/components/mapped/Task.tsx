@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../styles/mapped/Task.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faBars } from "@fortawesome/free-solid-svg-icons";
-import { Draggable } from "react-beautiful-dnd";
+import { Draggable } from "@hello-pangea/dnd";
 
 interface TaskProps {
   name: string;

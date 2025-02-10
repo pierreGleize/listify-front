@@ -15,7 +15,7 @@ import { UseAppDispatch, useAppSelector } from "@/app/redux/store";
 import { CloseOutlined } from "@ant-design/icons";
 // import TaskModal from "./TaskModal";
 import { RootState } from "@/app/redux/store";
-import { Droppable } from "react-beautiful-dnd";
+import { Droppable } from "@hello-pangea/dnd";
 
 interface ColumnProps {
   name: string;
