@@ -43,7 +43,7 @@ const Signup: React.FC<SignupProps> = ({ handleSection }) => {
     try {
       setError(false);
 
-      const response = await fetch("http://localhost:3001/users/signup", {
+      const response = await fetch("http://localhost:3000/users/signup", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ firstname, lastname, email, password }),

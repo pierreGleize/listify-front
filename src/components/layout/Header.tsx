@@ -51,7 +51,7 @@ const Header = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3001/boards/renameBoard", {
+      const response = await fetch("http://localhost:3000/boards/renameBoard", {
         method: "PATCH",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ boardId: currentBoard?._id, name: inputName }),
@@ -85,7 +85,7 @@ const Header = () => {
       : "addBoardToFavorite";
     try {
       const response = await fetch(
-        `http://localhost:3001/users/${UrlToFetch}`,
+        `http://localhost:3000/users/${UrlToFetch}`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

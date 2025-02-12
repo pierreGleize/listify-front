@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
   // Céer un nouveau tableau
   const createNewBoard = async () => {
     try {
-      const response = await fetch("http://localhost:3001/boards/createBoard", {
+      const response = await fetch("http://localhost:3000/boards/createBoard", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ token: user.token }),
@@ -127,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/boards/deleteBoard/${boardIdToDelete}/${user.token}`,
+        `http://localhost:3000/boards/deleteBoard/${boardIdToDelete}/${user.token}`,
         {
           method: "DELETE",
           headers: { "Content-type": "application/json" },
@@ -168,7 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/users/${UrlToFetch}`,
+        `http://localhost:3000/users/${UrlToFetch}`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

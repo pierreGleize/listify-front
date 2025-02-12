@@ -2,6 +2,7 @@
   /* position: relative; */
   display: flex;
   flex-direction: column;
+  /* flex-wrap: wrap; */
   gap: 10px;
   background-color: #194f57;
   padding: 10px;
@@ -10,6 +11,9 @@
   /* width: max-content; */
   /* white-space: normal; */
   margin-bottom: 15px;
+  /* max-width: 220px; */
+  word-wrap: break-word;
+  /* width: 282px; */
 }
 
 .date-container {

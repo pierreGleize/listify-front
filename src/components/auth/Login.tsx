@@ -40,7 +40,7 @@ const Login: React.FC<LoginProps> = ({ handleSection }) => {
     }
     try {
       setError(false);
-      const response = await fetch("http://localhost:3001/users/signin", {
+      const response = await fetch("http://localhost:3000/users/signin", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ email, password }),

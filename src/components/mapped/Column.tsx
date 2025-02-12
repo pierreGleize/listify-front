@@ -15,15 +15,16 @@ import { UseAppDispatch, useAppSelector } from "@/app/redux/store";
 import { CloseOutlined } from "@ant-design/icons";
 // import TaskModal from "./TaskModal";
 import { RootState } from "@/app/redux/store";
-import { Droppable } from "@hello-pangea/dnd";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 
 interface ColumnProps {
   name: string;
   tasks: { _id: string; name: string }[];
   id: string;
+  index: number;
 }
 
-const Column: React.FC<ColumnProps> = ({ name, id, tasks }) => {
+const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
   const [inputColumnActive, setInputColumnActive] = useState(false);
   const [columntName, setColumnName] = useState("");
   const [isopenEmoji, setIsOpenEmoji] = useState(false);
@@ -76,7 +77,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/boards/renameColumn",
+        "http://localhost:3000/boards/renameColumn",
         {
           method: "PATCH",
           headers: { "Content-type": "application/json" },
@@ -113,7 +114,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks }) => {
     if (newTaskName.trim().length === 0) return;
 
     try {
-      const response = await fetch("http://localhost:3001/boards/createTask", {
+      const response = await fetch("http://localhost:3000/boards/createTask", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ columnId: id, taskName: newTaskName }),
@@ -152,124 +153,149 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks }) => {
           onClick={() => setInputNewTaskActive(false)}
         ></div>
       )}
-      <div className={styles.container}>
-        {!inputColumnActive && (
+      <Draggable draggableId={id} index={index}>
+        {(provided, snapshot) => (
           <div
-            className={styles.top}
-            onClick={() => setInputColumnActive(true)}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+            className={styles.container}
+            style={{
+              border: snapshot.isDragging ? "2px solid white" : "",
+              // zIndex: snapshot.isDragging ? 1000 : 10,
+              // backgroundColor: snapshot.isDragging
+              //   ? "rgba(255, 255, 255, 0.6)"
+              //   : "red",
+              ...provided.draggableProps.style,
+            }}
           >
-            <span>{name}</span>
-
-            <FontAwesomeIcon icon={faPen} />
-          </div>
-        )}
-        {inputColumnActive && (
-          <div className={`${styles.top} ${styles.active}`}>
-            <input
-              type="text"
-              value={columntName}
-              ref={inputColumnNameRef}
-              onChange={(e) => setColumnName(e.target.value)}
-              autoFocus
-              placeholder="Nom de la liste"
-              className={styles.input}
-            />
-            <Image
-              src="/emoji-add.svg"
-              width={25}
-              height={25}
-              onClick={() => setIsOpenEmoji(!isopenEmoji)}
-              alt="Ajouter une emote au texte"
-            />
-            <FontAwesomeIcon
-              icon={faSquareCheck}
-              style={{ color: "#ffffff", fontSize: "25px" }}
-              onClick={handleRenameColumn}
-            />
-          </div>
-        )}
-        <EmojiPicker
-          height={"100%"}
-          width={"100%"}
-          open={isopenEmoji}
-          onEmojiClick={(e) =>
-            setColumnName((prevState) => prevState + e.emoji)
-          }
-          theme={Theme.LIGHT}
-          className={styles.emojiPicker}
-        />
-        <div className={styles["tasks-container"]}>
-          <Droppable
-            droppableId={id}
-            isDropDisabled={false}
-            isCombineEnabled={false}
-            ignoreContainerClipping={false}
-            // direction="vertical"
-          >
-            {(provided) => (
+            {!inputColumnActive && (
               <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                // className={styles["tasks-container"]}
+                className={styles.top}
+                onClick={() => setInputColumnActive(true)}
               >
-                {tasks.map((task: { _id: string; name: string }, index) => {
-                  // console.log(provided);
-                  return (
-                    <Task
-                      key={task._id}
-                      name={task.name}
-                      id={task._id}
-                      index={index}
-                    />
-                  );
-                })}
-                {provided.placeholder}
+                <span>{name}</span>
+
+                <FontAwesomeIcon icon={faPen} />
               </div>
             )}
-          </Droppable>
-
-          {inputNewTaskActive && (
-            <div
-              className={styles["new-task"]}
-              style={inputNewTaskActive ? { border: "1px solid white" } : {}}
-            >
-              <input
-                type="text"
-                value={newTaskName}
-                onChange={(e) => setNewTaskName(e.target.value)}
-                className={styles.input}
-                autoFocus
-              />
-            </div>
-          )}
-        </div>
-        {!inputNewTaskActive ? (
-          <div
-            className={`${styles.bottom} ${styles.bottomActif}`}
-            onClick={() => setInputNewTaskActive(true)}
-          >
-            <FontAwesomeIcon icon={faPlus} style={{ color: "#ffffff" }} />
-            <span>Ajouter une carte</span>
-          </div>
-        ) : (
-          <div className={styles.bottom}>
-            <button className={styles["btn-add_task"]} onClick={handleAddTask}>
-              Ajouter une carte
-            </button>
-            <CloseOutlined
-              onClick={() => setInputNewTaskActive(false)}
-              className={styles["close-input-new_task"]}
+            {inputColumnActive && (
+              <div className={`${styles.top} ${styles.active}`}>
+                <input
+                  type="text"
+                  value={columntName}
+                  ref={inputColumnNameRef}
+                  onChange={(e) => setColumnName(e.target.value)}
+                  autoFocus
+                  placeholder="Nom de la liste"
+                  className={styles.input}
+                />
+                <Image
+                  src="/emoji-add.svg"
+                  width={25}
+                  height={25}
+                  onClick={() => setIsOpenEmoji(!isopenEmoji)}
+                  alt="Ajouter une emote au texte"
+                />
+                <FontAwesomeIcon
+                  icon={faSquareCheck}
+                  style={{ color: "#ffffff", fontSize: "25px" }}
+                  onClick={handleRenameColumn}
+                />
+              </div>
+            )}
+            <EmojiPicker
+              height={"100%"}
+              width={"100%"}
+              open={isopenEmoji}
+              onEmojiClick={(e) =>
+                setColumnName((prevState) => prevState + e.emoji)
+              }
+              theme={Theme.LIGHT}
+              className={styles.emojiPicker}
             />
+            <div className={styles["tasks-container"]}>
+              <Droppable droppableId={id} type="task">
+                {(provided) => {
+                  return (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      style={{
+                        // background: snapshot.isDraggingOver
+                        //   ? "rgba(255, 255, 255, 0.1)"
+                        //   : "transparent",
+                        // minHeight: "10px",
+                        height: "100%",
+                      }}
+                    >
+                      {tasks.map(
+                        (task: { _id: string; name: string }, index) => {
+                          return (
+                            <Task
+                              key={task._id}
+                              name={task.name}
+                              id={task._id}
+                              index={index}
+                            />
+                          );
+                        }
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  );
+                }}
+              </Droppable>
+
+              {inputNewTaskActive && (
+                <div
+                  className={styles["new-task"]}
+                  style={
+                    inputNewTaskActive ? { border: "1px solid white" } : {}
+                  }
+                >
+                  <input
+                    type="text"
+                    value={newTaskName}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                    className={styles.input}
+                    autoFocus
+                  />
+                </div>
+              )}
+            </div>
+            {!inputNewTaskActive ? (
+              <div
+                className={`${styles.bottom} ${styles.bottomActif}`}
+                onClick={() => setInputNewTaskActive(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} style={{ color: "#ffffff" }} />
+                <span>Ajouter une carte</span>
+              </div>
+            ) : (
+              <div className={styles.bottom}>
+                <button
+                  className={styles["btn-add_task"]}
+                  onClick={handleAddTask}
+                >
+                  Ajouter une carte
+                </button>
+                <CloseOutlined
+                  onClick={() => setInputNewTaskActive(false)}
+                  className={styles["close-input-new_task"]}
+                />
+              </div>
+            )}
+            {/* {openTaskModal && (
+          <TaskModal
+          openTaskModal={openTaskModal}
+          closeModal={closeModal}
+          // loading={loading}
+          />
+          )} */}
           </div>
         )}
-        {/* {openTaskModal && (
-          <TaskModal
-            openTaskModal={openTaskModal}
-            closeModal={closeModal}
-            // loading={loading}
-          />
-        )} */}
-      </div>
+      </Draggable>
     </>
   );
 };

@@ -13,26 +13,33 @@ interface TaskProps {
 const Task: React.FC<TaskProps> = ({ name, id, index }) => {
   return (
     <Draggable draggableId={id} index={index}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          className={styles.container}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <span>{name}</span>
-          <div className={styles.tasks}>
-            <div className={styles["date-container"]}>
-              <FontAwesomeIcon icon={faCalendar} style={{ color: "black" }} />
-              <span>11/01/2025</span>
-              <span>-</span>
-              <span>11/18/2025</span>
+      {(provided, snapshot) => {
+        return (
+          <div
+            ref={provided.innerRef}
+            className={styles.container}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={{
+              border: snapshot.isDragging ? "2px solid white" : "",
+              zIndex: snapshot.isDragging ? 1000 : 10,
+              ...provided.draggableProps.style,
+            }}
+          >
+            <span>{name}</span>
+            <div className={styles.tasks}>
+              <div className={styles["date-container"]}>
+                <FontAwesomeIcon icon={faCalendar} style={{ color: "black" }} />
+                <span>11/01/2025</span>
+                <span>-</span>
+                <span>11/18/2025</span>
+              </div>
+              <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
+              <span>{id}</span>
             </div>
-            <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
-            <span>{id}</span>
           </div>
-        </div>
-      )}
+        );
+      }}
     </Draggable>
   );
 };

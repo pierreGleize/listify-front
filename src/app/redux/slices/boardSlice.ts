@@ -13,6 +13,7 @@ export interface Task {
   deadline: Date;
   createdAt: Date;
   _id: string;
+  position: number;
 }
 
 interface Column {
@@ -150,6 +151,7 @@ const boardSlice = createSlice({
 
       // Ajouter la tâche à la colonne de destination
       destinationColumn.tasks.splice(destinationIndex, 0, task);
+      // (endroit où la nouvelle tâche est insérée, nombre d'éléments à supprimer, élément à insérer)
     },
   },
 });

@@ -9,7 +9,7 @@ import { addColumn, moveTask } from "@/app/redux/slices/boardSlice";
 import { UseAppDispatch } from "@/app/redux/store";
 import { useAppSelector } from "@/app/redux/store";
 import styles from "../../styles/board/BoardsView.module.css";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 
 const BoardsView = () => {
   const [isAddColumnActive, setIsAddColumnActive] = useState(false);
@@ -34,7 +34,7 @@ const BoardsView = () => {
       if (!activeBoard) return;
 
       const response = await fetch(
-        "http://localhost:3001/boards/createColumn",
+        "http://localhost:3000/boards/createColumn",
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -63,40 +63,93 @@ const BoardsView = () => {
     }
   };
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = async (result: DropResult) => {
     const { source, destination, draggableId } = result;
 
     if (!destination) return;
 
-    dispatch(
-      moveTask({
-        sourceColumnId: source.droppableId,
-        destinationColumnId: destination.droppableId,
-        sourceIndex: source.index,
-        destinationIndex: destination.index,
-        taskId: draggableId,
-      })
-    );
+    console.log(source.index, destination.index);
+
+    try {
+      dispatch(
+        moveTask({
+          sourceColumnId: source.droppableId,
+          destinationColumnId: destination.droppableId,
+          sourceIndex: source.index,
+          destinationIndex: destination.index,
+          taskId: draggableId,
+        })
+      );
+      const response = await fetch("http://localhost:3000/boards/moveTask", {
+        method: "PATCH",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          sourceColumnId: source.droppableId,
+          destinationColumnId: destination.droppableId,
+          sourceIndex: source.index,
+          destinationIndex: destination.index,
+          taskId: draggableId,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      if (data.result) {
+        // console.log(data);
+        // dispatch(
+        //   moveTask({
+        //     sourceColumnId: source.droppableId,
+        //     destinationColumnId: destination.droppableId,
+        //     sourceIndex: source.index,
+        //     destinationIndex: destination.index,
+        //     taskId: draggableId,
+        //   })
+        // );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        {activeBoard &&
-          activeBoard.columnId.map(
-            (column: {
-              name: string;
-              _id: string;
-              tasks: { name: string; _id: string }[];
-            }) => (
-              <Column
-                key={column._id}
-                name={column.name}
-                tasks={column.tasks}
-                id={column._id}
-              />
-            )
+        <Droppable
+          droppableId="all-columns"
+          direction="horizontal"
+          type="column"
+        >
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className={styles.container}
+            >
+              {activeBoard &&
+                activeBoard.columnId.map(
+                  (
+                    column: {
+                      name: string;
+                      _id: string;
+                      tasks: { name: string; _id: string }[];
+                    },
+                    index
+                  ) => (
+                    <Column
+                      key={column._id}
+                      name={column.name}
+                      tasks={column.tasks}
+                      id={column._id}
+                      index={index}
+                    />
+                  )
+                )}
+              {provided.placeholder}
+            </div>
           )}
+        </Droppable>
       </DragDropContext>
 
       {!isAddColumnActive ? (
