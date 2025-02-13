@@ -10,7 +10,7 @@ import {
   faTrashCan,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector, UseAppDispatch } from "@/app/redux/store";
+import { useAppSelector, useAppDispatch } from "@/app/redux/store";
 import {
   addAnBoard,
   selectedBoard,
@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const dispatch = UseAppDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   // Référence pour stocker la position du scroll
@@ -71,11 +71,14 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
   // Céer un nouveau tableau
   const createNewBoard = async () => {
     try {
-      const response = await fetch("http://localhost:3000/boards/createBoard", {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ token: user.token }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/createBoard`,
+        {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({ token: user.token }),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -127,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/boards/deleteBoard/${boardIdToDelete}/${user.token}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/deleteBoard/${boardIdToDelete}/${user.token}`,
         {
           method: "DELETE",
           headers: { "Content-type": "application/json" },
@@ -168,7 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/users/${UrlToFetch}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${UrlToFetch}`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

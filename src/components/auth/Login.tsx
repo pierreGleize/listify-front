@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import styles from "../../styles/auth/Login_Signup.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
-import { UseAppDispatch } from "@/app/redux/store";
+import { useAppDispatch } from "@/app/redux/store";
 import { login } from "@/app/redux/slices/userSlice";
 import { addBoards, selectedBoard } from "@/app/redux/slices/boardSlice";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = ({ handleSection }) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const dispatch = UseAppDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   function validateEmail(email: string): boolean {
@@ -40,11 +40,14 @@ const Login: React.FC<LoginProps> = ({ handleSection }) => {
     }
     try {
       setError(false);
-      const response = await fetch("http://localhost:3000/users/signin", {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/signin`,
+        {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {

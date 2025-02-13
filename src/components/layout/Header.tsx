@@ -4,7 +4,7 @@ import styles from "../../styles/layout/Header.module.css";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector, UseAppDispatch } from "@/app/redux/store";
+import { useAppSelector, useAppDispatch } from "@/app/redux/store";
 import { renameBoard } from "@/app/redux/slices/boardSlice";
 import {
   addBoardToFavorite,
@@ -20,7 +20,7 @@ const Header = () => {
   const boards = useAppSelector((state) => state.board);
   const user = useAppSelector((state) => state.user);
 
-  const dispatch = UseAppDispatch();
+  const dispatch = useAppDispatch();
 
   const currentBoard = boards.value.find(
     (element) => element._id === boards.currentBoardId
@@ -51,11 +51,14 @@ const Header = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/boards/renameBoard", {
-        method: "PATCH",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ boardId: currentBoard?._id, name: inputName }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/renameBoard`,
+        {
+          method: "PATCH",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({ boardId: currentBoard?._id, name: inputName }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(
@@ -85,7 +88,7 @@ const Header = () => {
       : "addBoardToFavorite";
     try {
       const response = await fetch(
-        `http://localhost:3000/users/${UrlToFetch}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${UrlToFetch}`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },

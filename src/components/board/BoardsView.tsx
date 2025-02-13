@@ -5,8 +5,8 @@ import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import Image from "next/image";
 import Column from "../mapped/Column";
-import { addColumn, moveTask } from "@/app/redux/slices/boardSlice";
-import { UseAppDispatch } from "@/app/redux/store";
+import { addColumn, moveTask, moveColumn } from "@/app/redux/slices/boardSlice";
+import { useAppDispatch } from "@/app/redux/store";
 import { useAppSelector } from "@/app/redux/store";
 import styles from "../../styles/board/BoardsView.module.css";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
@@ -23,7 +23,7 @@ const BoardsView = () => {
     (element) => element._id === currentBoardId
   );
 
-  const dispatch = UseAppDispatch();
+  const dispatch = useAppDispatch();
 
   const handleAddColumn = async () => {
     if (newColumnName.trim().length === 0) return;
@@ -34,7 +34,7 @@ const BoardsView = () => {
       if (!activeBoard) return;
 
       const response = await fetch(
-        "http://localhost:3000/boards/createColumn",
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/createColumn`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -64,52 +64,96 @@ const BoardsView = () => {
   };
 
   const onDragEnd = async (result: DropResult) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
+
+    console.log(type);
 
     if (!destination) return;
 
-    console.log(source.index, destination.index);
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
 
-    try {
-      dispatch(
-        moveTask({
-          sourceColumnId: source.droppableId,
-          destinationColumnId: destination.droppableId,
-          sourceIndex: source.index,
-          destinationIndex: destination.index,
-          taskId: draggableId,
-        })
-      );
-      const response = await fetch("http://localhost:3000/boards/moveTask", {
-        method: "PATCH",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          sourceColumnId: source.droppableId,
-          destinationColumnId: destination.droppableId,
-          sourceIndex: source.index,
-          destinationIndex: destination.index,
-          taskId: draggableId,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
+    if (type === "column") {
+      try {
+        dispatch(
+          moveColumn({
+            sourceIndex: source.index,
+            destinationIndex: destination.index,
+            columnId: draggableId,
+          })
+        );
 
-      if (data.result) {
-        // console.log(data);
-        // dispatch(
-        //   moveTask({
-        //     sourceColumnId: source.droppableId,
-        //     destinationColumnId: destination.droppableId,
-        //     sourceIndex: source.index,
-        //     destinationIndex: destination.index,
-        //     taskId: draggableId,
-        //   })
-        // );
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/moveColumn`,
+          {
+            method: "PATCH",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({
+              sourceIndex: source.index,
+              destinationIndex: destination.index,
+              columnId: draggableId,
+              boardId: currentBoardId,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+        if (data.result) {
+          console.log(result);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      try {
+        dispatch(
+          moveTask({
+            sourceColumnId: source.droppableId,
+            destinationColumnId: destination.droppableId,
+            sourceIndex: source.index,
+            destinationIndex: destination.index,
+            taskId: draggableId,
+          })
+        );
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/moveTask`,
+          {
+            method: "PATCH",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({
+              sourceColumnId: source.droppableId,
+              destinationColumnId: destination.droppableId,
+              sourceIndex: source.index,
+              destinationIndex: destination.index,
+              taskId: draggableId,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        if (data.result) {
+          // console.log(data);
+          // dispatch(
+          //   moveTask({
+          //     sourceColumnId: source.droppableId,
+          //     destinationColumnId: destination.droppableId,
+          //     sourceIndex: source.index,
+          //     destinationIndex: destination.index,
+          //     taskId: draggableId,
+          //   })
+          // );
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

@@ -1,19 +1,13 @@
 .container {
-  /* position: relative; */
   display: flex;
   flex-direction: column;
-  /* flex-wrap: wrap; */
   gap: 10px;
   background-color: #194f57;
   padding: 10px;
   border-radius: 5px;
   white-space: normal;
-  /* width: max-content; */
-  /* white-space: normal; */
   margin-bottom: 15px;
-  /* max-width: 220px; */
   word-wrap: break-word;
-  /* width: 282px; */
 }
 
 .date-container {
@@ -23,12 +17,10 @@
   padding: 10px;
   border-radius: 5px;
   align-items: flex-start;
-  /* align-items: flex-start; */
   width: max-content;
   color: black;
   font-size: 14px;
 }
-/* .date-container  */
 
 .tasks {
   display: flex;

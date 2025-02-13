@@ -153,6 +153,34 @@ const boardSlice = createSlice({
       destinationColumn.tasks.splice(destinationIndex, 0, task);
       // (endroit où la nouvelle tâche est insérée, nombre d'éléments à supprimer, élément à insérer)
     },
+    moveColumn: (
+      state,
+      action: PayloadAction<{
+        sourceIndex: number;
+        destinationIndex: number;
+        columnId: string;
+      }>
+    ) => {
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      const column = board.columnId.find(
+        (column) => column._id === action.payload.columnId
+      );
+      if (!column) return;
+      board.columnId.splice(action.payload.sourceIndex, 1);
+      board.columnId.splice(action.payload.destinationIndex, 0, column);
+    },
+    deleteColumn: (state, action: PayloadAction<{ columnId: string }>) => {
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      board.columnId = board.columnId.filter(
+        (column) => column._id !== action.payload.columnId
+      );
+    },
   },
 });
 
@@ -166,5 +194,7 @@ export const {
   renameColumn,
   addTask,
   moveTask,
+  moveColumn,
+  deleteColumn,
 } = boardSlice.actions;
 export default boardSlice.reducer;

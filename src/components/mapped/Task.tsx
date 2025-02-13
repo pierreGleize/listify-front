@@ -1,8 +1,10 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import styles from "../../styles/mapped/Task.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faBars } from "@fortawesome/free-solid-svg-icons";
 import { Draggable } from "@hello-pangea/dnd";
+import TaskModal from "../board/TaskModal";
 
 interface TaskProps {
   name: string;
@@ -11,6 +13,11 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({ name, id, index }) => {
+  const [openTaskModal, setOpenTaskModal] = useState(false);
+
+  const closeModal = () => {
+    setOpenTaskModal(false);
+  };
   return (
     <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => {
@@ -25,6 +32,7 @@ const Task: React.FC<TaskProps> = ({ name, id, index }) => {
               zIndex: snapshot.isDragging ? 1000 : 10,
               ...provided.draggableProps.style,
             }}
+            onClick={() => setOpenTaskModal(true)}
           >
             <span>{name}</span>
             <div className={styles.tasks}>
@@ -37,6 +45,14 @@ const Task: React.FC<TaskProps> = ({ name, id, index }) => {
               <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
               <span>{id}</span>
             </div>
+
+            {openTaskModal && (
+              <TaskModal
+                openTaskModal={openTaskModal}
+                closeModal={closeModal}
+                // loading={loading}
+              />
+            )}
           </div>
         );
       }}
