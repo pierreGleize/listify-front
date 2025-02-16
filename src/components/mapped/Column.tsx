@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "../../styles/mapped/Column.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  // faPen,
   faEllipsisVertical,
   faPlus,
   faSquareCheck,
@@ -19,15 +18,22 @@ import {
 } from "@/app/redux/slices/boardSlice";
 import { useAppDispatch, useAppSelector } from "@/app/redux/store";
 import { CloseOutlined } from "@ant-design/icons";
-// import TaskModal from "../board/TaskModal";
 import { RootState } from "@/app/redux/store";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
+import { User } from "@/app/redux/slices/boardSlice";
 
 interface ColumnProps {
   name: string;
-  tasks: { _id: string; name: string }[];
+  tasks: {
+    _id: string;
+    name: string;
+    members: User[];
+    createdAt: Date;
+    description: string;
+    deadline: Date;
+  }[];
   id: string;
   index: number;
 }
@@ -39,19 +45,11 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
   const [inputNewTaskActive, setInputNewTaskActive] = useState(false);
   const [newTaskName, setNewTaskName] = useState("");
 
-  // const [openTaskModal, setOpenTaskModal] = useState(false);
-  // const [loading, setLoading] = useState(false);
   const inputColumnNameRef = useRef<HTMLInputElement | null>(null);
 
-  // const boards = useAppSelector((state: RootState) => state.board.value);
   const currentBoardId = useAppSelector(
     (state: RootState) => state.board.currentBoardId
   );
-
-  // const currentBoard = boards.find((board) => board._id === currentBoardId);
-
-  // const currentColumn =
-  //   currentBoard && currentBoard.columnId.find((column) => column._id === id);
 
   const dispatch = useAppDispatch();
 
@@ -60,12 +58,6 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
       setColumnName(name || "");
     }
   }, [inputColumnActive, name]);
-
-  // useEffect(() => {
-  //   if (currentColumn) {
-  //     setTasks(currentColumn.tasks);
-  //   }
-  // }, [currentColumn]);
 
   useEffect(() => {
     if (inputColumnActive && inputColumnNameRef.current) {
@@ -85,7 +77,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/renameColumn`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/columns/renameColumn`,
         {
           method: "PATCH",
           headers: { "Content-type": "application/json" },
@@ -114,16 +106,12 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
     }
   };
 
-  // const closeModal = () => {
-  //   setOpenTaskModal(false);
-  // };
-
   const handleAddTask = async () => {
     if (newTaskName.trim().length === 0) return;
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/createTask`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/tasks/createTask`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -156,7 +144,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
   const handleDeleteColumn = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/deleteAnColumn`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/columns/deleteAnColumn`,
         {
           method: "DELETE",
           headers: { "Content-type": "application/json" },
@@ -277,6 +265,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                 height={"100%"}
                 width={"100%"}
                 open={isopenEmoji}
+                style={{ zIndex: "10" }}
                 onEmojiClick={(e) =>
                   setColumnName((prevState) => prevState + e.emoji)
                 }
@@ -295,13 +284,28 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                         }}
                       >
                         {tasks.map(
-                          (task: { _id: string; name: string }, index) => {
+                          (
+                            task: {
+                              _id: string;
+                              name: string;
+                              members: User[];
+                              createdAt: Date;
+                              description: string;
+                              deadline: Date;
+                            },
+                            index
+                          ) => {
                             return (
                               <Task
                                 key={task._id}
                                 name={task.name}
-                                id={task._id}
+                                taskId={task._id}
                                 index={index}
+                                members={task.members}
+                                createdAt={task.createdAt}
+                                description={task.description}
+                                deadline={task.deadline}
+                                columnId={id}
                               />
                             );
                           }
@@ -351,13 +355,6 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                   />
                 </div>
               )}
-              {/* {openTaskModal && (
-                <TaskModal
-                  openTaskModal={openTaskModal}
-                  closeModal={closeModal}
-                  // loading={loading}
-                />
-              )} */}
             </div>
           </div>
         )}

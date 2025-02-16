@@ -2,7 +2,7 @@
     max-height: 100vh;
     height: 100vh;
     /* background-color: blue; */
-    padding-top: 80px;
+    /* padding-top: 80px; */
 }
 
 .main {
@@ -17,6 +17,7 @@
     white-space: nowrap;
     scrollbar-color: #A8A8A8 black;
     display: flex;
+    /* flex-direction: column; */
     align-items: flex-start;
     gap: 2rem;
 }

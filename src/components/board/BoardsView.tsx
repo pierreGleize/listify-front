@@ -5,7 +5,12 @@ import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import Image from "next/image";
 import Column from "../mapped/Column";
-import { addColumn, moveTask, moveColumn } from "@/app/redux/slices/boardSlice";
+import {
+  addColumn,
+  moveTask,
+  moveColumn,
+  User,
+} from "@/app/redux/slices/boardSlice";
 import { useAppDispatch } from "@/app/redux/store";
 import { useAppSelector } from "@/app/redux/store";
 import styles from "../../styles/board/BoardsView.module.css";
@@ -34,7 +39,7 @@ const BoardsView = () => {
       if (!activeBoard) return;
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/createColumn`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/columns/createColumn`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -87,7 +92,7 @@ const BoardsView = () => {
         );
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/moveColumn`,
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/columns/moveColumn`,
           {
             method: "PATCH",
             headers: { "Content-type": "application/json" },
@@ -121,7 +126,7 @@ const BoardsView = () => {
           })
         );
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/boards/moveTask`,
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/tasks/moveTask`,
           {
             method: "PATCH",
             headers: { "Content-type": "application/json" },
@@ -177,7 +182,14 @@ const BoardsView = () => {
                     column: {
                       name: string;
                       _id: string;
-                      tasks: { name: string; _id: string }[];
+                      tasks: {
+                        name: string;
+                        _id: string;
+                        members: User[];
+                        description: string;
+                        createdAt: Date;
+                        deadline: Date;
+                      }[];
                     },
                     index
                   ) => (

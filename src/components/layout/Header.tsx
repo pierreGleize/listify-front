@@ -10,6 +10,7 @@ import {
   addBoardToFavorite,
   removeBoardFromFavorite,
 } from "@/app/redux/slices/userSlice";
+import Members from "../mapped/Members";
 
 const Header = () => {
   const [isActiveInput, setIsActiveInput] = useState(false);
@@ -75,7 +76,6 @@ const Header = () => {
             boardId: data.board._id,
           })
         );
-        // setInputName(currentBoard?.name || "Tableau");
       }
     } catch (error) {
       console.error(error);
@@ -116,15 +116,11 @@ const Header = () => {
   };
 
   const collaborators = currentBoard?.userId.map((user, i) => {
-    const firstLetterOfFirstName = user.firstname.charAt(0).toUpperCase();
-    const firstLetterOfFirstLastname = user.lastname.charAt(0).toUpperCase();
+    const initialLetters =
+      user.firstname.charAt(0).toUpperCase() +
+      user.lastname.charAt(0).toUpperCase();
 
-    return (
-      <span
-        className={styles.member}
-        key={i}
-      >{`${firstLetterOfFirstName}${firstLetterOfFirstLastname}`}</span>
-    );
+    return <Members key={i} initialLetters={initialLetters} />;
   });
 
   return (

@@ -5,21 +5,47 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faBars } from "@fortawesome/free-solid-svg-icons";
 import { Draggable } from "@hello-pangea/dnd";
 import TaskModal from "../board/TaskModal";
+import { User } from "@/app/redux/slices/boardSlice";
+import moment from "moment";
 
 interface TaskProps {
+  columnId: string;
+  taskId: string;
   name: string;
-  id: string;
   index: number;
+  members: User[];
+  createdAt: Date;
+  description: string;
+  deadline: Date;
 }
 
-const Task: React.FC<TaskProps> = ({ name, id, index }) => {
+const Task: React.FC<TaskProps> = ({
+  columnId,
+  taskId,
+  name,
+  index,
+  members,
+  createdAt,
+  description,
+  deadline,
+}) => {
   const [openTaskModal, setOpenTaskModal] = useState(false);
+
+  // console.log(openTaskModal);
 
   const closeModal = () => {
     setOpenTaskModal(false);
   };
+
+  const dateCreationTask = moment(createdAt)
+    .format("DD MM YYYY")
+    .replaceAll(" ", "/");
+
+  const dateLimiteTask =
+    deadline && moment(deadline).format("DD MM YYYY").replaceAll(" ", "/");
+
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable draggableId={taskId} index={index}>
       {(provided, snapshot) => {
         return (
           <div
@@ -38,21 +64,25 @@ const Task: React.FC<TaskProps> = ({ name, id, index }) => {
             <div className={styles.tasks}>
               <div className={styles["date-container"]}>
                 <FontAwesomeIcon icon={faCalendar} style={{ color: "black" }} />
-                <span>11/01/2025</span>
+                <span>{dateCreationTask}</span>
                 <span>-</span>
-                <span>11/18/2025</span>
+                <span>{dateLimiteTask}</span>
               </div>
               <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
-              <span>{id}</span>
+              <span>{taskId}</span>
             </div>
 
-            {openTaskModal && (
-              <TaskModal
-                openTaskModal={openTaskModal}
-                closeModal={closeModal}
-                // loading={loading}
-              />
-            )}
+            <TaskModal
+              closeModal={closeModal}
+              isOpen={openTaskModal}
+              name={name}
+              members={members}
+              dateCreation={dateCreationTask}
+              description={description}
+              deadline={dateLimiteTask}
+              taskId={taskId}
+              columnId={columnId}
+            />
           </div>
         );
       }}

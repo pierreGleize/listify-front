@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
+export interface User {
   firstname: string;
   lastname: string;
   email: string;
@@ -181,6 +181,58 @@ const boardSlice = createSlice({
         (column) => column._id !== action.payload.columnId
       );
     },
+    renameTask: (
+      state,
+      action: PayloadAction<{
+        columnId: string;
+        taskId: string;
+        taskName: string;
+      }>
+    ) => {
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+
+      const column = board.columnId.find(
+        (column) => column._id === action.payload.columnId
+      );
+
+      if (!column) return;
+      const task = column.tasks.find(
+        (task) => task._id === action.payload.taskId
+      );
+
+      if (!task) return;
+      task.name = action.payload.taskName;
+    },
+    joinTask: (
+      state,
+      action: PayloadAction<{
+        columnId: string;
+        taskId: string;
+        taskMembers: User[];
+      }>
+    ) => {
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+
+      const column = board.columnId.find(
+        (column) => column._id === action.payload.columnId
+      );
+
+      if (!column) return;
+      const task = column.tasks.find(
+        (task) => task._id === action.payload.taskId
+      );
+
+      console.log(action.payload.taskMembers);
+
+      if (!task) return;
+      task.members = action.payload.taskMembers;
+    },
   },
 });
 
@@ -196,5 +248,7 @@ export const {
   moveTask,
   moveColumn,
   deleteColumn,
+  renameTask,
+  joinTask,
 } = boardSlice.actions;
 export default boardSlice.reducer;
