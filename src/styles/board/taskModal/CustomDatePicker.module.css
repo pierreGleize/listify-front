@@ -1,0 +1,34 @@
+/* .customCheckbox {
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    background-color: #e3e6e9;
+    border: 2px solid #555;
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .customCheckbox:checked {
+    background-color: #007bff;
+  }
+  
+  .customCheckbox:checked::after {
+    content: "✔";
+    font-size: 16px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  } */
+  
+  /* .poperDate {
+  
+        z-index: 9999;
+        overflow: visible ;
+        color: #e3e6e9;
+        position: absolute;
+   
+  } */

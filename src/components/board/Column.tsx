@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import styles from "../../styles/mapped/Column.module.css";
+import styles from "../../styles/board/Column.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsisVertical,
@@ -32,7 +32,10 @@ interface ColumnProps {
     members: User[];
     createdAt: Date;
     description: string;
-    deadline: Date;
+    deadline: Date | null;
+    startDate: Date | null;
+    selectedStartDay: boolean;
+    selectedDeadline: boolean;
   }[];
   id: string;
   index: number;
@@ -43,7 +46,8 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
   const [columntName, setColumnName] = useState("");
   const [isopenEmoji, setIsOpenEmoji] = useState(false);
   const [inputNewTaskActive, setInputNewTaskActive] = useState(false);
-  const [newTaskName, setNewTaskName] = useState("");
+  const [inputNewTask, setInputNewTask] = useState("");
+  const [inputNewTaskError, setInputNewTaskError] = useState(false);
 
   const inputColumnNameRef = useRef<HTMLInputElement | null>(null);
 
@@ -67,7 +71,7 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
 
   const handleRenameColumn = async () => {
     setInputNewTaskActive(false);
-    setNewTaskName("");
+    setInputNewTask("");
     if (columntName.trim().length === 0) {
       setColumnName(name || "");
       setIsOpenEmoji(false);
@@ -107,15 +111,19 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
   };
 
   const handleAddTask = async () => {
-    if (newTaskName.trim().length === 0) return;
+    if (inputNewTask.trim().length === 0) {
+      setInputNewTaskError(true);
+      return;
+    }
 
     try {
+      setInputNewTaskError(false);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_URL_BACKEND}/tasks/createTask`,
         {
           method: "POST",
           headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ columnId: id, taskName: newTaskName }),
+          body: JSON.stringify({ columnId: id, taskName: inputNewTask }),
         }
       );
 
@@ -134,10 +142,11 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
           })
         );
         setInputNewTaskActive(false);
-        setNewTaskName("");
+        setInputNewTask("");
       }
     } catch (error) {
       console.error(error);
+      setInputNewTaskError(true);
     }
   };
 
@@ -186,16 +195,19 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
     },
   ];
 
+  const handleCloseNewTask = (): void => {
+    setInputNewTaskActive(false);
+    setInputNewTask("");
+    setInputNewTaskError(false);
+  };
+
   return (
     <>
       {inputColumnActive && (
         <div className={styles.overlay} onClick={handleRenameColumn}></div>
       )}
       {inputNewTaskActive && (
-        <div
-          className={styles.overlay}
-          onClick={() => setInputNewTaskActive(false)}
-        ></div>
+        <div className={styles.overlay} onClick={handleCloseNewTask}></div>
       )}
       <Draggable draggableId={id} index={index}>
         {(provided, snapshot) => (
@@ -203,17 +215,10 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
-            style={{
-              // height: "100%",
-              // maxHeight: "100%",
-              ...provided.draggableProps.style,
-            }}
           >
             <div
               style={{
                 border: snapshot.isDragging ? "2px solid white" : "",
-
-                // ...provided.draggableProps.style,
               }}
               className={styles.container}
             >
@@ -291,7 +296,10 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                               members: User[];
                               createdAt: Date;
                               description: string;
-                              deadline: Date;
+                              deadline: Date | null;
+                              startDate: Date | null;
+                              selectedStartDay: boolean;
+                              selectedDeadline: boolean;
                             },
                             index
                           ) => {
@@ -306,6 +314,9 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                                 description={task.description}
                                 deadline={task.deadline}
                                 columnId={id}
+                                startDate={task.startDate}
+                                selectedStartDay={task.selectedStartDay}
+                                selectedDeadline={task.selectedDeadline}
                               />
                             );
                           }
@@ -319,14 +330,15 @@ const Column: React.FC<ColumnProps> = ({ name, id, tasks, index }) => {
                 {inputNewTaskActive && (
                   <div
                     className={styles["new-task"]}
-                    style={
-                      inputNewTaskActive ? { border: "1px solid white" } : {}
-                    }
+                    style={inputNewTaskError ? { border: "2px solid red" } : {}}
                   >
                     <input
                       type="text"
-                      value={newTaskName}
-                      onChange={(e) => setNewTaskName(e.target.value)}
+                      value={inputNewTask}
+                      onChange={(e) => {
+                        setInputNewTask(e.target.value);
+                        setInputNewTaskError(false);
+                      }}
                       className={styles.input}
                       autoFocus
                     />

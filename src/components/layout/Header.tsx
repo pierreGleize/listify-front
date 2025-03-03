@@ -10,7 +10,7 @@ import {
   addBoardToFavorite,
   removeBoardFromFavorite,
 } from "@/app/redux/slices/userSlice";
-import Members from "../mapped/Members";
+import Members from "../commun/Members";
 
 const Header = () => {
   const [isActiveInput, setIsActiveInput] = useState(false);

@@ -14,6 +14,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
     <div className={styles.container}>
       <Header />
       <Sidebar toogleSidebar={toogleSidebar} isSidebarOpen={isSidebarOpen} />
+
       <div
         className={styles.main}
         style={{

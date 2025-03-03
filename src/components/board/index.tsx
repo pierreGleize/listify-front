@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faPlus } from "@fortawesome/free-solid-svg-icons";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import Image from "next/image";
-import Column from "../mapped/Column";
+import Column from "./Column";
 import {
   addColumn,
   moveTask,
@@ -71,8 +71,6 @@ const BoardsView = () => {
   const onDragEnd = async (result: DropResult) => {
     const { source, destination, draggableId, type } = result;
 
-    console.log(type);
-
     if (!destination) return;
 
     if (
@@ -109,7 +107,6 @@ const BoardsView = () => {
           throw new Error(data.message);
         }
         if (data.result) {
-          console.log(result);
         }
       } catch (error) {
         console.error(error);
@@ -145,16 +142,6 @@ const BoardsView = () => {
         }
 
         if (data.result) {
-          // console.log(data);
-          // dispatch(
-          //   moveTask({
-          //     sourceColumnId: source.droppableId,
-          //     destinationColumnId: destination.droppableId,
-          //     sourceIndex: source.index,
-          //     destinationIndex: destination.index,
-          //     taskId: draggableId,
-          //   })
-          // );
         }
       } catch (error) {
         console.error(error);
@@ -164,7 +151,7 @@ const BoardsView = () => {
 
   return (
     <>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors={true}>
         <Droppable
           droppableId="all-columns"
           direction="horizontal"
@@ -188,10 +175,13 @@ const BoardsView = () => {
                         members: User[];
                         description: string;
                         createdAt: Date;
-                        deadline: Date;
+                        deadline: Date | null;
+                        startDate: Date | null;
+                        selectedStartDay: boolean;
+                        selectedDeadline: boolean;
                       }[];
                     },
-                    index
+                    index: number
                   ) => (
                     <Column
                       key={column._id}

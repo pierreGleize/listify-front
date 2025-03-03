@@ -1,5 +1,5 @@
 import TodosView from "@/components/todo/TodosView";
-import HomeLayout from "@/components/layout/HomeLayout";
+import HomeLayout from "@/components/layout";
 import React from "react";
 
 const TodosViewPage = () => {

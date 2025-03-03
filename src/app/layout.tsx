@@ -1,17 +1,15 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
+import "react-datepicker/dist/react-datepicker.css";
 import ReduxProvider from "./redux/provider";
+import { Roboto } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -25,12 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={roboto.className}>
       <meta
         name="format-detection"
         content="telephone=no, date=no, email=no, address=no"
       />
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>

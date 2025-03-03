@@ -1,6 +1,6 @@
 import React from "react";
-import BoardsView from "@/components/board/BoardsView";
-import HomeLayout from "@/components/layout/HomeLayout";
+import BoardsView from "@/components/board";
+import HomeLayout from "@/components/layout";
 
 const BoardsViewPage = () => {
   return (

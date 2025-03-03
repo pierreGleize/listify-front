@@ -19,3 +19,33 @@ a {
   color: red;
   font-size: 14px;
 }
+
+.tiptap {
+  min-height: 300px;
+  padding: 20px;
+  background-color:#22272B;
+  color: #b3b7bc;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  outline: none;
+  border: none;
+}
+
+.ant-avatar-group .ant-avatar {
+  border: none;
+}
+
+.popHoverContainer {
+  color: #e3e6e9;
+   font-size: 12px;
+}
+/* 
+.react-datepicker {
+  z-index: 9999;
+  position: fixed;
+} */
+
+.react-datepicker-popper {
+  position: fixed !important;
+  /* z-index: 9999 !important; */
+}

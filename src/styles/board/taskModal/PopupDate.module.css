@@ -1,0 +1,63 @@
+.container {
+    padding: 5px;
+    border-radius: 10px;
+    color: #e3e6e9;
+    width: 300px;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-top: -0.5rem;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.sectionTitle {
+    margin-bottom: 1rem;
+}
+
+.section {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customInput {
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #e3e6e9;
+    cursor: pointer;
+}
+
+.customCheckbox {
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    background-color: #e3e6e9;
+    border: 2px solid #555;
+    border-radius: 5px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .customCheckbox:checked {
+    background-color: #007bff;
+  }
+  
+  .customCheckbox:checked::after {
+    content: "✔";
+    font-size: 16px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

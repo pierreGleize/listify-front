@@ -1,0 +1,17 @@
+.btnIcon {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-around; */
+    gap: 10px;
+    padding: 10px;
+    /* width: 120px; */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    background-color: #45505A;
+    user-select: none;
+    transition: background-color 0.3s ease;
+    &:hover {
+        background-color: #667481;
+    }
+}

@@ -2,24 +2,25 @@
     max-height: 100vh;
     height: 100vh;
     /* background-color: blue; */
-    /* padding-top: 80px; */
+    padding-top: 60px;
 }
 
 .main {
-    /* height: 100%; */
-    background-color: yellow;
+    background-color: #cccccc;
     height: 100%;
-    /* background-color: white; */
-    padding: 2rem 3.5rem;
+    padding: 2rem 1rem;
     min-width: calc(100vw - 250px);
+    /* border-radius: 50px; */
+    /* width: 100%; */
     overflow-x: auto;
     transition: margin-left 0.3s ease-in-out;
     white-space: nowrap;
     scrollbar-color: #A8A8A8 black;
     display: flex;
-    /* flex-direction: column; */
     align-items: flex-start;
+    /* flex-direction: column; */
     gap: 2rem;
+    /* position: relative; */
 }
 
 .main::-webkit-scrollbar-track {

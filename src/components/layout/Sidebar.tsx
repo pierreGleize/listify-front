@@ -9,6 +9,7 @@ import {
   faEllipsisVertical,
   faTrashCan,
   faStar,
+  faSquarePollVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAppSelector, useAppDispatch } from "@/app/redux/store";
 import {
@@ -16,6 +17,7 @@ import {
   selectedBoard,
   deleteAnBoard,
 } from "@/app/redux/slices/boardSlice";
+import { UserOutlined } from "@ant-design/icons";
 import {
   addBoardToFavorite,
   removeBoardFromFavorite,
@@ -240,73 +242,81 @@ const Sidebar: React.FC<SidebarProps> = ({ toogleSidebar, isSidebarOpen }) => {
       className={styles.container}
       style={isSidebarOpen ? { left: "0px" } : { left: "-250px" }}
     >
-      <h3 className={styles.title}>
-        Espace de travail de <span>{`${user.firstname} ${user.lastname}`}</span>
-      </h3>
-      <h3 className={styles["board-title"]}>Vos tableaux</h3>
-
-      <div className={styles["boards-container"]} ref={scrollContainerRef}>
-        {boards.length > 0 &&
-          [...boards]
-            .sort((a, b) => {
-              const aIsFavorite =
-                user.favoriteBoards && user.favoriteBoards.includes(a._id);
-              const bIsFavorite =
-                user.favoriteBoards && user.favoriteBoards.includes(b._id);
-              return (bIsFavorite ? 1 : 0) - (aIsFavorite ? 1 : 0);
-            })
-            .map((element) => (
-              <div
-                className={styles.board}
-                key={element._id}
-                style={
-                  currentBoardId === element._id
-                    ? {
-                        backgroundColor: "#194f57",
-                      }
-                    : {}
-                }
-              >
-                <span
-                  style={{ width: "100%", padding: "10px" }}
-                  onClick={() => handleNavigateToAnotherBoard(element._id)}
-                >
-                  {element.name}
-                </span>
-                <FontAwesomeIcon
-                  icon={faStar}
-                  style={
-                    user.favoriteBoards &&
-                    user.favoriteBoards.includes(element._id || "")
-                      ? { color: "yellow" }
-                      : { color: "#ffffff" }
-                  }
-                  className={styles.icon}
-                  onClick={() => handleAddBoardToFavorite(element._id)}
-                />
-                <Dropdown menu={{ items }} trigger={["click"]}>
-                  <div onClick={() => setBoardIdToDelete(element._id)}>
-                    <FontAwesomeIcon
-                      icon={faEllipsisVertical}
-                      className={styles.icon}
-                    />
-                  </div>
-                </Dropdown>
-                {contextHolder}
-              </div>
-            ))}
+      <div className={`${styles.sectionTitleContainer} ${styles.underline}`}>
+        <UserOutlined className={styles.iconSection} />
+        <h3 className={styles.title}>{`${user.firstname} ${user.lastname}`}</h3>
+      </div>
+      <div className={styles.sectionTitleContainer}>
+        <FontAwesomeIcon
+          icon={faSquarePollVertical}
+          className={styles.iconSection}
+        />
+        <h3 className={styles.title}>Tableaux</h3>
       </div>
 
-      <button className={styles["btn-add-board"]} onClick={createNewBoard}>
-        <FontAwesomeIcon icon={faPlus} />
-        Créer un nouveau tableau
-      </button>
+      <div className={styles.underline}>
+        <div className={styles["boards-container"]} ref={scrollContainerRef}>
+          {boards.length > 0 &&
+            [...boards]
+              .sort((a, b) => {
+                const aIsFavorite =
+                  user.favoriteBoards && user.favoriteBoards.includes(a._id);
+                const bIsFavorite =
+                  user.favoriteBoards && user.favoriteBoards.includes(b._id);
+                return (bIsFavorite ? 1 : 0) - (aIsFavorite ? 1 : 0);
+              })
+              .map((element) => (
+                <div
+                  className={styles.board}
+                  key={element._id}
+                  style={
+                    currentBoardId === element._id
+                      ? {
+                          backgroundColor: "#194f57",
+                        }
+                      : {}
+                  }
+                >
+                  <span
+                    style={{ width: "100%", padding: "10px" }}
+                    onClick={() => handleNavigateToAnotherBoard(element._id)}
+                  >
+                    {element.name}
+                  </span>
+                  <FontAwesomeIcon
+                    icon={faStar}
+                    style={
+                      user.favoriteBoards &&
+                      user.favoriteBoards.includes(element._id || "")
+                        ? { color: "yellow" }
+                        : { color: "#ffffff" }
+                    }
+                    className={styles.icon}
+                    onClick={() => handleAddBoardToFavorite(element._id)}
+                  />
+                  <Dropdown menu={{ items }} trigger={["click"]}>
+                    <div onClick={() => setBoardIdToDelete(element._id)}>
+                      <FontAwesomeIcon
+                        icon={faEllipsisVertical}
+                        className={styles.icon}
+                      />
+                    </div>
+                  </Dropdown>
+                  {contextHolder}
+                </div>
+              ))}
+        </div>
+        <button className={styles["btn-add-board"]} onClick={createNewBoard}>
+          <FontAwesomeIcon icon={faPlus} />
+          Créer un nouveau tableau
+        </button>
+      </div>
 
       <FontAwesomeIcon
         icon={isSidebarOpen ? faChevronLeft : faChevronRight}
         className={styles.iconOpen}
         onClick={() => toogleSidebar()}
-        style={isSidebarOpen ? { right: "-28px" } : { right: "-40px" }}
+        style={isSidebarOpen ? { right: "5px" } : { right: "-30px" }}
       />
     </div>
   );

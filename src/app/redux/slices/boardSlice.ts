@@ -10,10 +10,13 @@ export interface Task {
   name: string;
   members: User[];
   description: string;
-  deadline: Date;
+  deadline: Date | null;
   createdAt: Date;
   _id: string;
   position: number;
+  startDate: Date | null;
+  selectedStartDay: boolean;
+  selectedDeadline: boolean;
 }
 
 interface Column {
@@ -228,10 +231,91 @@ const boardSlice = createSlice({
         (task) => task._id === action.payload.taskId
       );
 
-      console.log(action.payload.taskMembers);
-
       if (!task) return;
       task.members = action.payload.taskMembers;
+    },
+    updateDate: (
+      state,
+      action: PayloadAction<{
+        columnId: string;
+        taskId: string;
+        deadline: Date | null;
+        startDate: Date | null;
+        selectedStartDay: boolean;
+        selectedDeadline: boolean;
+      }>
+    ) => {
+      const {
+        columnId,
+        taskId,
+        deadline,
+        startDate,
+        selectedStartDay,
+        selectedDeadline,
+      } = action.payload;
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      const column = board.columnId.find((column) => column._id === columnId);
+      if (!column) return;
+      const task = column.tasks.find((task) => task._id === taskId);
+      if (!task) return;
+      task.deadline = deadline;
+      task.startDate = startDate;
+      task.selectedStartDay = selectedStartDay;
+      task.selectedDeadline = selectedDeadline;
+    },
+    deleteTask: (
+      state,
+      action: PayloadAction<{ columnId: string; taskId: string }>
+    ) => {
+      const { columnId, taskId } = action.payload;
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      const column = board.columnId.find((column) => column._id === columnId);
+      console.log(column);
+      if (!column) return;
+      column.tasks = column.tasks.filter((task) => task._id !== taskId);
+    },
+    updateDescription: (
+      state,
+      action: PayloadAction<{
+        columnId: string;
+        taskId: string;
+        description: string;
+      }>
+    ) => {
+      const { columnId, taskId, description } = action.payload;
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      const column = board.columnId.find((column) => column._id === columnId);
+      if (!column) return;
+      const task = column.tasks.find((task) => task._id === taskId);
+      if (!task) return;
+      task.description = description;
+    },
+    removeDate: (
+      state,
+      action: PayloadAction<{ columnId: string; taskId: string }>
+    ) => {
+      const { columnId, taskId } = action.payload;
+      const board = state.value.find(
+        (board) => board._id === state.currentBoardId
+      );
+      if (!board) return;
+      const column = board.columnId.find((column) => column._id === columnId);
+      if (!column) return;
+      const task = column.tasks.find((task) => task._id === taskId);
+      if (!task) return;
+      task.deadline = null;
+      task.startDate = null;
+      task.selectedStartDay = false;
+      task.selectedDeadline = false;
     },
   },
 });
@@ -250,5 +334,9 @@ export const {
   deleteColumn,
   renameTask,
   joinTask,
+  updateDate,
+  deleteTask,
+  updateDescription,
+  removeDate,
 } = boardSlice.actions;
 export default boardSlice.reducer;

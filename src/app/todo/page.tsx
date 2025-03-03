@@ -1,4 +1,4 @@
-import HomeLayout from "@/components/layout/HomeLayout";
+import HomeLayout from "@/components/layout";
 import React from "react";
 import TodosContainer from "@/components/todo/TodosContainer";
 

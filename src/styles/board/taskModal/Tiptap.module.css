@@ -1,0 +1,59 @@
+.container {
+    width: 80%;
+    /* min-height: 300px; */
+}
+
+.addBorderFocus {
+    margin-bottom: 0.5rem;
+}
+
+.addBorderFocus:focus-within {
+    border: 2px solid #579DFF;
+    border-radius: 5px;
+}
+
+.btnIcon {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 10px;
+    color: #B6C2CF;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3 ease;
+    &:hover {
+        background-color: #282D33;
+    }
+}
+
+
+.toolKit {
+    display: flex;
+    align-items: center;
+    /* height: 100%; */
+    background-color: #1D2125;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 2px solid #2A3037;
+    padding-left: 5px;
+}
+.active {
+    background-color: #1C2B41;
+    color: #579DFF;  
+    border-radius: 5px;
+}
+
+.btnSubmit {
+    border: none;
+    background-color:#579DFF;
+    font-weight: 450;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+    &:hover {
+        background-color: #85B8FF;
+    }
+}
